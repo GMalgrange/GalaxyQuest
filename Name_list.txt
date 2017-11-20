@@ -1,1 +1,1 @@
-Sol,Alpha-Centauri,Pollux,Epsilon-Eridani,Deneb,Altair,Arcturus,Vega,Antares,Sirius,Polaris,Aldebaran,Procyon,Regulus,Beltegeuse,Canopus,Capella,Spica,Alphard,Castor,Raskamir,Bovatir,Ellamir,Bastamore
+Sol,Alpha-Centauri,Pollux,Epsilon-Eridani,Deneb,Altair,Arcturus,Vega,Antares,Sirius,Polaris,Aldebaran,Procyon,Regulus,Beltegeuse,Canopus,Capella,Spica,Alphard,Castor,Raskamir,Bovatir,Ellamir,Bastamore,Trappist

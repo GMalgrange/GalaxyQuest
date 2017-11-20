@@ -47,28 +47,10 @@ class NewGame:
 		for i in range(0, randAsteroid):
 			aAsteroid = Asteroid()
 			iSystem._asteroidList.append(aAsteroid)
-		
-	def generateNewGame(self):
-		
-		print("New game")
-		print("Generate a new Galaxy")
-		self._galaxy = Galaxy()
-		print("Generate System list")
-		
-		#Retrieve the name list file and shuffle it
-		aNameFile = open("Name_list.txt", "r")
-		aNameList = parseNameList(aNameFile)
-		random.shuffle(aNameList)
-		
-		#Generate a list of system with random position
-		for i in range(0, self._galaxy._size):
-			aSystem = StellarSystem(self._galaxy._dimension)
-			#aSystem.generateSystem(self._galaxy._dimension)
-			aSystem._name = aNameList[i]
-			self.populateSystem(aSystem)
-			self._galaxy.aSystemList.append(aSystem)
 			
-		#Link those system with hyperlanes:
+	def generateHyperlane(self):
+		
+		#Link system with hyperlanes:
 		#For each system, define hyperlanes to the 2 closest systems
 		#Check for redundancy.
 		#Some systems may end up with more than 2 lane connexion; this is fine.
@@ -107,4 +89,43 @@ class NewGame:
 					break			
 					
 		#print("Hperlane list: " + str(self._galaxy._hyperlaneList))
+		
+	def generateNewGame(self):
+		
+		print("New game")
+		print("Generate a new Galaxy")
+		self._galaxy = Galaxy()
+		print("Generate System list")
+		
+		#Retrieve the name list file and shuffle it
+		aNameFile = open("Name_list.txt", "r")
+		aNameList = parseNameList(aNameFile)
+		random.shuffle(aNameList)
+		
+		#Generate a list of system with random position
+		
+		#Old style, full randomized. Causes clusterization
+		#for i in range(0, self._galaxy._size):
+			#aSystem = StellarSystem(self._galaxy._dimension)
+			##aSystem.generateSystem(self._galaxy._dimension)
+			#aSystem._name = aNameList[i]
+			#self.populateSystem(aSystem)
+			#self._galaxy.aSystemList.append(aSystem)
+			
+		aSectorMatrix = self._galaxy._sectorMatrix
+		aGalaxySquaredDimension = self._galaxy._dimension[0] // self._galaxy.getSquaredSize()
+		
+		count = 0
+		for x in range(0, self._galaxy.getSquaredSize()):
+			for y in range(0, self._galaxy.getSquaredSize()):
+				aXBound = (x * aGalaxySquaredDimension, (x+1) * aGalaxySquaredDimension)
+				aYBound = (y * aGalaxySquaredDimension, (y+1) * aGalaxySquaredDimension)
+				aSystem = StellarSystem(aXBound, aYBound)
+				#aSystem.generateSystem(self._galaxy._dimension)
+				aSystem._name = aNameList[count]
+				count = count +1
+				self.populateSystem(aSystem)
+				self._galaxy.aSystemList.append(aSystem)				
+		
+		self.generateHyperlane()
 	

@@ -11,9 +11,10 @@ class StellarSystem:
 	_asteroidList = []
 	_name = "Unknown"
 	
-	def __init__(self, iGSize):		
+	def __init__(self, iXBound, aYBound):		
 		#Define system position within the Galaxy bounds passed as argument
-		self._systemPosition =(random.randint(0,iGSize[0]),random.randint(0,iGSize[1]))
+		self._systemPosition =(random.randint(iXBound[0],iXBound[1]),random.randint(aYBound[0],aYBound[1]))
+		print(self._systemPosition)
 
 	
 	
