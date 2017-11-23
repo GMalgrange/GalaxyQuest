@@ -16,7 +16,7 @@ class Planete(CelestialBody):
 	_type = PlaneteType.ROCKY_BARREN
 	def __init__(self, iName):
 		self._name = iName
-		print("Create new Planete: "+self._name)
+		#print("Create new Planete: "+self._name)
 		
 	def getPlaneteType(self):
 		return self._type

@@ -2,5 +2,7 @@ from maps.celestialBody import CelestialBody
 
 class Asteroid(CelestialBody):
 	def __init__(self):
-		print("New asteroid")
+		#print("New asteroid")
+		self._name = "Hello World"
+
 		
