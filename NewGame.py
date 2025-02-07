@@ -2,7 +2,6 @@
 #Generic import
 import random
 import math
-from operator import itemgetter
 #Local import
 from maps.galaxy import Galaxy
 from maps.StellarSystem import StellarSystem
@@ -28,8 +27,7 @@ def parseNameList(iNameList):
 ####################################################################
 
 class NewGame:
-	
-	
+		
 	
 	def populateSystem(self, iSystem):
 		#Link system with hyperlanes:
@@ -43,7 +41,7 @@ class NewGame:
 			randPlanet = 2
 		else:
 			randPlanet= random.randint(2, (8 - randAsteroid))
-		print("Sun: "+ iSystem._name)
+		#print("Sun: "+ iSystem._name)
 		#Generate planet list
 		#name should be StarNameX
 		#With X the number of the planet inside the system, in roman numeral
@@ -60,50 +58,51 @@ class NewGame:
 			
 	def generateHyperlane(self):
 		
-		#New matrix based generation
-		#select 2 random systems within the immediate proximity of the current one 
-		#(In the matrix representation of the galaxy)
-		for i in range(0, self._galaxy._size):
-			sytemI = self._galaxy.aSystemList[i]._matrixIndex
-			print("System "+str(sytemI))
-			aRandPos = [sytemI[0], sytemI[1]]
+		aHyperlaneList = []
+		
+		for coord, system in self._galaxy._systemList.items():		
+			#print("System "+ str(coord))
 			targetSystemFound = 0
 			targetSectorList = []
 			#Put all valid proximity sector in a list
-			for j in range(sytemI[0] - 1, sytemI[0]+2):
-				for k in range(sytemI[1] - 1, sytemI[1]+2):
-					if (j,k) != (sytemI[0], sytemI[1]) and self.isMatrixPositionValid((j,k)):
+			for j in range(coord[0] - 1, coord[0]+2):
+				for k in range(coord[1] - 1, coord[1]+2):
+					if (j,k) != (coord[0], coord[1]) and self.isMatrixPositionValid((j,k)):
 						targetSectorList.append((j,k))
 			#Shuffle the list
 			random.shuffle(targetSectorList)
+			
 			#Take the first 2 sectors in the list,
 			#retrieve the corresponding Systems
 			targetSystemPair = []
-			for l in range(0, self._galaxy._size):
-				if self._galaxy.aSystemList[l]._matrixIndex == targetSectorList[0]:
-					targetSystemPair.append(self._galaxy.aSystemList[l])
-				elif self._galaxy.aSystemList[l]._matrixIndex == targetSectorList[1]:
-					targetSystemPair.append(self._galaxy.aSystemList[l])
+			for key, value in self._galaxy._systemList.items():
+				if key == targetSectorList[0]:
+					targetSystemPair.append(value)
+				elif key == targetSectorList[1]:
+					targetSystemPair.append(value)
 					
 			#Create a lane
-			laneA = Hyperlane(self._galaxy.aSystemList[i], targetSystemPair[0])
-			laneB = Hyperlane(self._galaxy.aSystemList[i], targetSystemPair[1])
+			laneA = Hyperlane(system, targetSystemPair[0])
+			laneB = Hyperlane(system, targetSystemPair[1])			
+		
 			#The first pair is safe, put them directly in the list
-			if not self._galaxy._hyperlaneList:
-				self._galaxy._hyperlaneList.append(laneA)
-				self._galaxy._hyperlaneList.append(laneB)
+			if not aHyperlaneList:
+				aHyperlaneList.append(laneA)
+				aHyperlaneList.append(laneB)
 			#Then for the next ones, check for duplicates before adding to the list
-			for k in range(0, len(self._galaxy._hyperlaneList)):	
-				if laneA != self._galaxy._hyperlaneList[k]:
-					self._galaxy._hyperlaneList.append(laneA)
+			for k in range(0, len(aHyperlaneList)):	
+				if laneA != aHyperlaneList[k]:
+					aHyperlaneList.append(laneA)
 					#print(laneA.getSystemPair())
 					break
 					
-			for k in range(0, len(self._galaxy._hyperlaneList)):
-				if laneB != self._galaxy._hyperlaneList[k]:
-					self._galaxy._hyperlaneList.append(laneB)
+			for k in range(0, len(aHyperlaneList)):
+				if laneB != aHyperlaneList[k]:
+					aHyperlaneList.append(laneB)
 					#print(laneB.getSystemPair())
-					break					
+					break			
+		
+		self._galaxy._hyperlaneList = aHyperlaneList
 			#while targetSystemFound != 2 :
 				#randX = random.randint(sytemI[0] - 1, sytemI[0] + 1)
 				#randY = random.randint(sytemI[1] - 1, sytemI[1] + 1)
@@ -118,7 +117,7 @@ class NewGame:
 		
 	def generateNewGame(self):
 		
-		print("New game")
+		#print("New game")
 		print("Generate a new Galaxy")
 		self._galaxy = Galaxy()
 		print("Generate System list")
@@ -128,31 +127,25 @@ class NewGame:
 		aNameList = parseNameList(aNameFile)
 		random.shuffle(aNameList)
 		
-		#Generate a list of system with random position
-		
-		#Old style, full randomized. Causes clusterization
-		#for i in range(0, self._galaxy._size):
-			#aSystem = StellarSystem(self._galaxy._dimension)
-			##aSystem.generateSystem(self._galaxy._dimension)
-			#aSystem._name = aNameList[i]
-			#self.populateSystem(aSystem)
-			#self._galaxy.aSystemList.append(aSystem)
+		#Generate a list of system with random position 
+		#within each square of the matrix
 			
 		aSectorMatrix = self._galaxy._sectorMatrix
 		aGalaxySquaredDimension = self._galaxy._dimension[0] // self._galaxy.getSquaredSize()
 		
+		aSystemList = {}
 		count = 0
 		for x in range(0, self._galaxy.getSquaredSize()):
 			for y in range(0, self._galaxy.getSquaredSize()):
 				aXBound = (x * aGalaxySquaredDimension, (x+1) * aGalaxySquaredDimension)
 				aYBound = (y * aGalaxySquaredDimension, (y+1) * aGalaxySquaredDimension)
 				aSystem = StellarSystem(aXBound, aYBound, (x, y))
-				#aSystem.generateSystem(self._galaxy._dimension)
 				aSystem._name = aNameList[count]
 				count = count +1
 				self.populateSystem(aSystem)
-				self._galaxy.aSystemList.append(aSystem)				
-		
+				aSystemList[(x,y)] = aSystem
+				
+		self._galaxy._systemList = aSystemList
 		self.generateHyperlane()
 	
 	def isMatrixPositionValid(self, iPosition):

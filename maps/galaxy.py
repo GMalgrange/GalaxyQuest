@@ -7,7 +7,7 @@ class Galaxy:
 	_size = 25
 	_squaredSize = 5
 	_dimension = "Unknown"
-	aSystemList = []
+	_systemList = {}
 	_hyperlaneList = []
 	
 	def __init__(self):
@@ -17,8 +17,8 @@ class Galaxy:
 		
 	def getListAsString(self):
 		oList=""
-		for i in range(0, len(self.aSystemList)):
-			oList = oList+self.aSystemList[i]._name+":("+str(self.aSystemList[i]._systemPosition[0])+ ","+str(self.aSystemList[i]._systemPosition[1])+") ;" 
+		for i in range(0, len(self._systemList)):
+			oList = oList+self._systemList[i]._name+":("+str(self._systemList[i]._systemPosition[0])+ ","+str(self._systemList[i]._systemPosition[1])+") ;" 
 			
 		return oList
 	

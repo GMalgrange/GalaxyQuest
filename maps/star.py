@@ -13,7 +13,7 @@ class Star(CelestialBody):
 	_name="Unknown"
 	_class=StarEnum.YELLOW
 	def __init__(self, name):
-		print("New sun")
+		#print("New sun")
 		self.ressource = "Gas"
 		self._name = name
 		
